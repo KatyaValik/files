@@ -3,6 +3,8 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <limits.h>
+#include <string.h>
+long int size;
 void traverse(char const *dir)
 {
 	char name[PATH_MAX];
@@ -11,6 +13,7 @@ void traverse(char const *dir)
 	off_t o;
 	struct stat s;
 	char *delim = "/";
+	char symbol='a';
 	if (!strcmp(dir, "/")) delim = "";
 	if (!(d = opendir(dir))) {
 		perror(dir);
@@ -31,7 +34,10 @@ void traverse(char const *dir)
 		}
 		seekdir(d, o);
 		} else {
-			printf("%s\n", name);
+			if (dd->d_name[0]==symbol) {
+				size=size+s.st_size;
+				printf("%s: %ld\n",dd->d_name,s.st_size);
+			}
 		}
 	}
 	closedir(d);
@@ -39,6 +45,8 @@ void traverse(char const *dir)
 
 int main(void)
 {
-	traverse("/");
+	size=0;
+	traverse("/home/katerina/work3/tests");
+	printf("%ld\n",size);
 	return 0;
 }

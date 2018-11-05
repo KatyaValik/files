@@ -35,7 +35,9 @@ void traverse(char const *dir)
 		seekdir(d, o);
 		} else {
 			if (dd->d_name[0]==symbol) {
-				size=size+s.st_size;
+				if (!(S_ISLNK(s.st_mode))) {
+					size=size+s.st_size;
+				}
 				printf("%s: %ld\n",dd->d_name,s.st_size);
 			}
 		}

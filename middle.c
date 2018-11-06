@@ -4,7 +4,12 @@
 #include <dirent.h>
 #include <limits.h>
 #include <string.h>
+#include <stdlib.h>
 long int size;
+long int i,k;
+long int mas[100];
+
+
 void traverse(char const *dir)
 {
 	char name[PATH_MAX];
@@ -35,10 +40,33 @@ void traverse(char const *dir)
 		seekdir(d, o);
 		} else {
 			if (dd->d_name[0]==symbol) {
-				if (!(S_ISLNK(s.st_mode))) {
+				if (s.st_nlink==1) {
 					size=size+s.st_size;
+					//printf("%ld\n",s.st_size);
+				} else {
+					printf("%ld",i);
+					if (i==0) {
+						size=size+s.st_size;
+						mas[0]=s.st_ino;
+						i++;
+						printf("%ld",s.st_ino);
+					} else {
+						int fl=0;
+						for (k=0; k<i; k++){
+							if (mas[k]==s.st_ino) fl=1;
+						
+						}
+						if (!fl) {
+							size=size+s.st_size;
+							//mas=realloc(mas,strlen(mas)+1);
+							mas[i]=s.st_ino;
+							i++;
+							printf("akakaka");
+						}
+					}
 				}
 				printf("%s: %ld\n",dd->d_name,s.st_size);
+				//printf("%ld",s.st_nlink);
 			}
 		}
 	}
@@ -48,7 +76,12 @@ void traverse(char const *dir)
 int main(void)
 {
 	size=0;
+	i=0;
+//	*mas=calloc(1,1);
 	traverse("/home/katerina/work3/tests");
+//	for (int k=i-1; k>=0; k--) {
+//		free(&mas[k]);
+//	}
 	printf("%ld\n",size);
 	return 0;
 }
